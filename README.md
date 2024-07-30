@@ -1,2 +1,2 @@
-# -CBTCIP
+# CBTCIP
 Java programming project 
