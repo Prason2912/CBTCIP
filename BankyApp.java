@@ -3,13 +3,17 @@ import java.util.Map;
 import java.util.Scanner;
 
 class BankAccount {
+    private String accountNumber;
     private String accountHolder;
+    private String accountType;
     private double balance;
 
     // Constructor
-    public BankAccount(String accountHolder) {
+    public BankAccount(String accountNumber, String accountHolder, String accountType, double initialBalance) {
+        this.accountNumber = accountNumber;
         this.accountHolder = accountHolder;
-        this.balance = 0.0;
+        this.accountType = accountType;
+        this.balance = initialBalance;
     }
 
     // Method to deposit money
@@ -49,6 +53,27 @@ class BankAccount {
             return false;
         }
     }
+
+    // Getters for account details
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public String getAccountHolder() {
+        return accountHolder;
+    }
+
+    public String getAccountType() {
+        return accountType;
+    }
+
+    @Override
+    public String toString() {
+        return "Account Number: " + accountNumber +
+                ", Holder: " + accountHolder +
+                ", Type: " + accountType +
+                ", Balance: $" + balance;
+    }
 }
 
 public class BankyApp {
@@ -63,7 +88,8 @@ public class BankyApp {
             System.out.println("3. Withdraw");
             System.out.println("4. Check Balance");
             System.out.println("5. Transfer Funds");
-            System.out.println("6. Exit");
+            System.out.println("6. View Account Details");
+            System.out.println("7. Exit");
             System.out.print("Select an option: ");
 
             int option = scanner.nextInt();
@@ -85,6 +111,9 @@ public class BankyApp {
                     transferFunds();
                     break;
                 case 6:
+                    viewAccountDetails();
+                    break;
+                case 7:
                     System.out.println("Exiting...");
                     scanner.close();
                     return;
@@ -95,10 +124,17 @@ public class BankyApp {
     }
 
     private static void createAccount() {
+        System.out.print("Enter account number: ");
+        String accountNumber = scanner.next();
         System.out.print("Enter account holder's name: ");
         String name = scanner.next();
-        if (!accounts.containsKey(name)) {
-            accounts.put(name, new BankAccount(name));
+        System.out.print("Enter account type (e.g., Savings, Checking): ");
+        String type = scanner.next();
+        System.out.print("Enter initial balance: ");
+        double initialBalance = scanner.nextDouble();
+
+        if (!accounts.containsKey(accountNumber)) {
+            accounts.put(accountNumber, new BankAccount(accountNumber, name, type, initialBalance));
             System.out.println("Account created for " + name);
         } else {
             System.out.println("Account already exists.");
@@ -106,9 +142,9 @@ public class BankyApp {
     }
 
     private static void deposit() {
-        System.out.print("Enter account holder's name: ");
-        String name = scanner.next();
-        BankAccount account = accounts.get(name);
+        System.out.print("Enter account number: ");
+        String accountNumber = scanner.next();
+        BankAccount account = accounts.get(accountNumber);
         if (account != null) {
             System.out.print("Enter deposit amount: ");
             double amount = scanner.nextDouble();
@@ -119,9 +155,9 @@ public class BankyApp {
     }
 
     private static void withdraw() {
-        System.out.print("Enter account holder's name: ");
-        String name = scanner.next();
-        BankAccount account = accounts.get(name);
+        System.out.print("Enter account number: ");
+        String accountNumber = scanner.next();
+        BankAccount account = accounts.get(accountNumber);
         if (account != null) {
             System.out.print("Enter withdrawal amount: ");
             double amount = scanner.nextDouble();
@@ -132,9 +168,9 @@ public class BankyApp {
     }
 
     private static void checkBalance() {
-        System.out.print("Enter account holder's name: ");
-        String name = scanner.next();
-        BankAccount account = accounts.get(name);
+        System.out.print("Enter account number: ");
+        String accountNumber = scanner.next();
+        BankAccount account = accounts.get(accountNumber);
         if (account != null) {
             account.checkBalance();
         } else {
@@ -143,13 +179,13 @@ public class BankyApp {
     }
 
     private static void transferFunds() {
-        System.out.print("Enter your account holder's name: ");
-        String fromName = scanner.next();
-        BankAccount fromAccount = accounts.get(fromName);
+        System.out.print("Enter your account number: ");
+        String fromAccountNumber = scanner.next();
+        BankAccount fromAccount = accounts.get(fromAccountNumber);
         if (fromAccount != null) {
-            System.out.print("Enter recipient account holder's name: ");
-            String toName = scanner.next();
-            BankAccount toAccount = accounts.get(toName);
+            System.out.print("Enter recipient account number: ");
+            String toAccountNumber = scanner.next();
+            BankAccount toAccount = accounts.get(toAccountNumber);
             if (toAccount != null) {
                 System.out.print("Enter transfer amount: ");
                 double amount = scanner.nextDouble();
@@ -159,6 +195,17 @@ public class BankyApp {
             }
         } else {
             System.out.println("Your account does not exist.");
+        }
+    }
+
+    private static void viewAccountDetails() {
+        System.out.print("Enter account number: ");
+        String accountNumber = scanner.next();
+        BankAccount account = accounts.get(accountNumber);
+        if (account != null) {
+            System.out.println(account);
+        } else {
+            System.out.println("Account does not exist.");
         }
     }
 }
